@@ -77,6 +77,8 @@ data class Comment(
 
 class PostNotFoundException(message: String) : RuntimeException(message)
 
+class CommentNotFoundException(message: String) : RuntimeException(message)
+
 data class Likes(
     val count: Int = 0,
     val userLikes: Boolean = false,
@@ -107,7 +109,7 @@ object WallService {
                     return reportComments.last()
                 }
         }
-        throw PostNotFoundException("Error in the comment complaint")
+        throw CommentNotFoundException("Error in the comment complaint")
     }
 
     fun add(post: Post): Post {
