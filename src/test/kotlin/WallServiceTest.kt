@@ -7,7 +7,8 @@ class WallServiceTest {
 
     @Test(expected = PostNotFoundException::class)
     fun shouldThrow() {
-        WallService.createComment(1, Comment(text = "Ошибка!")) ?: throw PostNotFoundException("Пост не найден!")
+        val postTest = Post(id = 0, comment = emptyArray(), likes = Likes()) // Объект Post создан, но в массив не добавлен.
+        WallService.createComment(postTest.id, Comment(text = "Ошибка!"))
     }
 
     @Test

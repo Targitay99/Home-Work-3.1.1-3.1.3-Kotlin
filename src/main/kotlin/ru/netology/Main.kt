@@ -7,22 +7,23 @@ fun main() {
     val post3 = WallService.add(Post(3, 2, 3, 4, 5, "Три", 7, 8, true, emptyArray(), Likes(10)))
     val post4 = Post(3, 2, 3, 4, 5, "пост не с этой страницы", 7, 8, true, emptyArray(), Likes())
 
-    val comment1 = WallService.createComment(post1.id, Comment(text = "Я")) ?: throw PostNotFoundException("Post not found!")
-    val comment2 = WallService.createComment(post1.id, Comment(text = "не привязан")) ?: throw PostNotFoundException("Post not found!")
-    val comment3 = WallService.createComment(post1.id, Comment(text = "к посту!")) ?: throw PostNotFoundException("Post not found!")
+    val comment1 = WallService.createComment(post1.id, Comment(text = "Я"))
+    val comment2 = WallService.createComment(post1.id, Comment(text = "не привязан"))
+    val comment3 = WallService.createComment(post1.id, Comment(text = "к посту!"))
+
 
     WallService.printComments()
 
-    val reportComment1 = WallService.createReportComment(ReportComment(1, comment1.id, 1))?: throw PostNotFoundException("Error in the comment complaint")
+    val reportComment1 = WallService.createReportComment(ReportComment(1, comment1.id, 1))
     // не существующий пост
-    // val reportComment2 = WallService.createReportComment(ReportComment(1, 0, 0))?: throw PostNotFoundException("Error in the comment complaint")
+    // val reportComment2 = WallService.createReportComment(ReportComment(1, 0, 0))
 
     // не существующий индекс жалобы
-    // val reportComment3 = WallService.createReportComment(ReportComment(1, comment1.id, 9))?: throw PostNotFoundException("Error in the comment complaint")
+    // val reportComment3 = WallService.createReportComment(ReportComment(1, comment1.id, 9))
 
     WallService.printReportComment()
 
-    WallService.createComment(post4.id, Comment(text = "Ошибка!")) ?: throw PostNotFoundException("Post not found!")
+    WallService.createComment(post4.id, Comment(text = "Ошибка!"))
 }
 
 data class Post(
@@ -88,17 +89,17 @@ object WallService {
     private var comments = emptyArray<Comment>()
     private var reportComments = emptyArray<ReportComment>()
 
-    fun createComment(postId: Int, comment: Comment): Comment? {
+    fun createComment(postId: Int, comment: Comment): Comment {
         for (post in posts)
             if (post.id == postId) {
                 val commentId = comment.hashCode()
                 comments += comment.copy(id = commentId)
                 return comments.last()
             }
-        return null
+        throw PostNotFoundException("Post not found!")
     }
 
-    fun createReportComment(reportComment: ReportComment): ReportComment? {
+    fun createReportComment(reportComment: ReportComment): ReportComment {
         if (reportComment.reason in 0..8) {
             for (comment in comments)
                 if (comment.id == reportComment.commentId) {
@@ -106,7 +107,7 @@ object WallService {
                     return reportComments.last()
                 }
         }
-        return null
+        throw PostNotFoundException("Error in the comment complaint")
     }
 
     fun add(post: Post): Post {
@@ -141,9 +142,9 @@ object WallService {
             println(comments[i - 1].text)
     }
 
-    fun printReportComment(){
+    fun printReportComment() {
         for (i in 1..reportComments.size)
-            println(reportComments[i-1])
+            println(reportComments[i - 1])
     }
 }
 
